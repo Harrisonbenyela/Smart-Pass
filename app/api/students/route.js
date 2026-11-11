@@ -5,8 +5,13 @@ import { sql } from '@/lib/db';
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  const rows = await sql`SELECT id, qr_token, name, class, photo FROM students ORDER BY class, name`;
-  return NextResponse.json(rows);
+  try {
+    const rows = await sql`SELECT id, qr_token, name, class, photo FROM students ORDER BY class, name`;
+    return NextResponse.json(rows);
+  } catch (error) {
+    console.error('API STUDENTS GET ERROR:', error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }
 
 // Body: { class: "Form 3A", names: ["Ada Obi", ...] }
@@ -28,3 +33,6 @@ export async function DELETE(req) {
   await sql`DELETE FROM students WHERE id = ${Number(id)}`;
   return NextResponse.json({ ok: true });
 }
+ 
+
+
